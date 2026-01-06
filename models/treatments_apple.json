@@ -1,0 +1,81 @@
+{
+  "Apple___Apple_scab": {
+    "cause": "Fungal infection (Venturia inaequalis)",
+    "symptoms": "Dark, scabby lesions on leaves and fruit, olive-green spots",
+    "organic_treatment": [
+      "Remove fallen leaves and infected fruit",
+      "Apply sulfur spray during growing season",
+      "Improve air circulation through pruning",
+      "Apply neem oil as preventative"
+    ],
+    "chemical_treatment": [
+      "Captan fungicide",
+      "Dodine or Myclobutanil",
+      "Apply at bud break and continue every 7-10 days"
+    ],
+    "prevention": [
+      "Plant resistant varieties (e.g., Liberty, Freedom)",
+      "Proper spacing for airflow",
+      "Remove infected debris in fall",
+      "Avoid overhead irrigation"
+    ]
+  },
+  "Apple___Black_rot": {
+    "cause": "Fungal infection (Botryosphaeria obtusa)",
+    "symptoms": "Black, sunken lesions on fruit and shoots, frogeye leaf spot",
+    "organic_treatment": [
+      "Prune out infected branches",
+      "Remove mummified fruit",
+      "Apply copper-based fungicide",
+      "Improve tree vigor with proper nutrition"
+    ],
+    "chemical_treatment": [
+      "Thiophanate-methyl",
+      "Captan spray",
+      "Apply during pink and petal fall stages"
+    ],
+    "prevention": [
+      "Prune infected wood during dormancy",
+      "Remove cankers and dead wood",
+      "Avoid tree wounds and stress",
+      "Maintain good drainage"
+    ]
+  },
+  "Apple___Cedar_apple_rust": {
+    "cause": "Fungal infection (Gymnosporangium juniperi-virginianae)",
+    "symptoms": "Yellow-orange spots on leaves with tube-like projections underneath",
+    "organic_treatment": [
+      "Remove nearby juniper/cedar trees (alternate host)",
+      "Apply sulfur spray",
+      "Remove infected leaves promptly",
+      "Apply copper-based organic fungicides"
+    ],
+    "chemical_treatment": [
+      "Propiconazole",
+      "Myclobutanil",
+      "Apply at pink bud stage and continue"
+    ],
+    "prevention": [
+      "Plant resistant varieties (e.g., Enterprise, Pristine)",
+      "Remove juniper within 100 yards if possible",
+      "Apply preventive fungicide sprays",
+      "Monitor weather for infection periods"
+    ]
+  },
+  "Apple___healthy": {
+    "cause": "No disease detected",
+    "symptoms": "Healthy green foliage, no lesions or spots",
+    "organic_treatment": [
+      "Continue regular care and monitoring"
+    ],
+    "chemical_treatment": [
+      "No treatment needed"
+    ],
+    "prevention": [
+      "Maintain proper irrigation and fertilization",
+      "Ensure good air circulation",
+      "Regular monitoring for early disease detection",
+      "Balanced pruning for tree health"
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "0": "Apple___Apple_scab",
+  "1": "Apple___Black_rot",
+  "2": "Apple___Cedar_apple_rust",
+  "3": "Apple___healthy",
+  "4": "Potato___Early_blight",
+  "5": "Potato___healthy",
+  "6": "Potato___Late_blight",
+  "7": "Tomato___Bacterial_spot",
+  "8": "Tomato___Early_blight",
+  "9": "Tomato___Late_blight",
+  "10": "Tomato___Leaf_Mold",
+  "11": "Tomato___Septoria_leaf_spot",
+  "12": "Tomato___Target_Spot",
+  "13": "Tomato___healthy"
+}

@@ -1,0 +1,103 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.project
+.pydevproject
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# OS
+Thumbs.db
+.DS_Store
+*.log
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+*.ipynb
+
+# Large files
+*.h5
+*.keras
+*.pb
+*.onnx
+*.pth
+
+# Data
+data/plantvillage\ dataset/
+data/dataset/
+data/*.zip
+*.csv
+*.tsv
+
+# Logs
+logs/
+*.log
+*.out
+
+
+
+# Cache
+.cache/
+*.cache
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+.~*
+
+# Model checkpoints (keep models/ but ignore large files)
+!models/
+models/*.h5
+models/*.keras
+models/*.pb
+models/checkpoints/
+
+# Streamlit cache
+.streamlit/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Mac
+.AppleDouble
+.LSOverride

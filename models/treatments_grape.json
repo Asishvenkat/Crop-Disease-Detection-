@@ -1,0 +1,81 @@
+{
+  "Grape___Black_rot": {
+    "cause": "Fungal infection (Guignardia bidwellii)",
+    "symptoms": "Black circular lesions on leaves and fruit, mummified berries",
+    "organic_treatment": [
+      "Remove infected plant debris",
+      "Apply neem oil spray",
+      "Improve air circulation",
+      "Prune to reduce humidity"
+    ],
+    "chemical_treatment": [
+      "Mancozeb fungicide",
+      "Copper-based fungicide",
+      "Apply at bud break and continue every 10-14 days"
+    ],
+    "prevention": [
+      "Plant resistant varieties",
+      "Proper spacing for airflow",
+      "Remove mummified berries",
+      "Avoid overhead irrigation"
+    ]
+  },
+  "Grape___Esca_(Black_Measles)": {
+    "cause": "Complex fungal infection (multiple pathogens)",
+    "symptoms": "Tiger stripe leaf pattern, sudden vine death, internal wood decay",
+    "organic_treatment": [
+      "Prune infected wood during dormancy",
+      "Improve soil health with compost",
+      "Reduce plant stress with proper irrigation",
+      "Remove severely infected vines"
+    ],
+    "chemical_treatment": [
+      "No effective chemical treatment available",
+      "Focus on cultural practices",
+      "Proper wound protection during pruning"
+    ],
+    "prevention": [
+      "Minimize pruning wounds",
+      "Use clean pruning tools",
+      "Avoid water stress",
+      "Maintain vine vigor"
+    ]
+  },
+  "Grape___Leaf_blight_(Isariopsis_Leaf_Spot)": {
+    "cause": "Fungal infection (Isariopsis spp.)",
+    "symptoms": "Angular brown spots on leaves, premature defoliation",
+    "organic_treatment": [
+      "Remove infected leaves",
+      "Apply sulfur spray",
+      "Improve air circulation",
+      "Copper-based organic fungicides"
+    ],
+    "chemical_treatment": [
+      "Mancozeb or chlorothalonil",
+      "Apply preventively in humid conditions",
+      "Rotate fungicide classes"
+    ],
+    "prevention": [
+      "Avoid overhead watering",
+      "Maintain proper plant spacing",
+      "Remove fallen leaves",
+      "Apply preventive sprays in wet seasons"
+    ]
+  },
+  "Grape___healthy": {
+    "cause": "No disease detected",
+    "symptoms": "Healthy green foliage, no lesions or spots",
+    "organic_treatment": [
+      "Continue regular care"
+    ],
+    "chemical_treatment": [
+      "No treatment needed"
+    ],
+    "prevention": [
+      "Maintain proper irrigation",
+      "Ensure good air circulation",
+      "Regular monitoring for early disease detection",
+      "Balanced fertilization"
+    ]
+  }
+}
