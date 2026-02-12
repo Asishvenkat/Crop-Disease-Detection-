@@ -1,0 +1,16 @@
+{
+  "0": {
+    "disease_name": "Leaf Scorch",
+    "scientific_name": "Diplocarpon earliana",
+    "treatment": "Fungicide application (Captan or Sulfur-based). Remove infected leaves. Improve air circulation. Ensure proper watering (avoid wetting foliage).",
+    "severity": "Moderate",
+    "prevention": "Use disease-resistant varieties. Apply preventative fungicides in spring. Maintain proper plant spacing."
+  },
+  "1": {
+    "disease_name": "Healthy",
+    "scientific_name": "Healthy Plant",
+    "treatment": "No treatment needed. Continue regular maintenance.",
+    "severity": "None",
+    "prevention": "Maintain good cultural practices."
+  }
+}

@@ -226,6 +226,21 @@ def get_current_crop():
         return "potato"
 
 
+def get_available_crops():
+    """Fetch available crops from backend (fallback to defaults)."""
+    try:
+        response = requests.get(API_CROPS_URL, timeout=5)
+        if response.status_code == 200:
+            data = response.json()
+            crops = data.get("crops")
+            if isinstance(crops, list) and crops:
+                return crops
+    except:
+        pass
+    # Fallback to known set
+    return ["potato", "grape", "apple", "corn"]
+
+
 def format_confidence(confidence):
     """Format confidence as percentage"""
     return f"{confidence:.1%}"
@@ -431,7 +446,7 @@ def display_symptom_analysis(symptom_analysis, lang):
 
 
 def display_grad_cam(heatmap_base64, original_image):
-    """Display Grad-CAM heatmap visualization"""
+    """Display saliency heatmap visualization"""
     col1, col2 = st.columns(2)
     
     with col1:
@@ -439,11 +454,11 @@ def display_grad_cam(heatmap_base64, original_image):
         st.image(original_image, width=280)
     
     with col2:
-        st.markdown("**Grad-CAM Heatmap:**")
+        st.markdown("**Saliency Map:**")
         if heatmap_base64:
             heatmap_image = Image.open(io.BytesIO(base64.b64decode(heatmap_base64)))
             st.image(heatmap_image, width=280)
-            st.caption("🔴 Red regions = high influence on prediction")
+            st.caption("🔴 Bright areas = regions influencing the prediction")
 
 
 def display_image_quality(quality):
@@ -521,11 +536,21 @@ def main():
     col1, col2 = st.columns([2, 3])
 
     with col1:
+        available_crops = get_available_crops()
+        emoji_map = {
+            "potato": "🥔 Potato",
+            "grape": "🍇 Grape",
+            "apple": "🍎 Apple",
+            "corn": "🌽 Corn",
+        }
+        def fmt_crop(x):
+            return emoji_map.get(x, x.title())
+        default_index = available_crops.index(current_crop) if current_crop in available_crops else 0
         selected_crop = st.selectbox(
             t("choose_crop", lang),
-            options=["potato", "grape", "apple"],
-            format_func=lambda x: {"potato": "🥔 Potato", "grape": "🍇 Grape", "apple": "🍎 Apple"}[x],
-            index=["potato", "grape", "apple"].index(current_crop) if current_crop in ["potato", "grape", "apple"] else 0,
+            options=available_crops,
+            format_func=fmt_crop,
+            index=default_index,
             key="crop_selector"
         )
     
@@ -542,10 +567,19 @@ def main():
                     st.error(f"Failed to switch to {selected_crop} model")
         else:
             # Show current model info
-            crop_emoji = {"potato": "🥔", "grape": "🍇", "apple": "🍎"}[st.session_state.active_crop]
-            accuracy_map = {"potato": "95.43%", "grape": "97.53%", "apple": "94.32%"}
+            crop_emoji = {
+                "potato": "🥔",
+                "grape": "🍇",
+                "apple": "🍎",
+                "corn": "🌽",
+            }.get(st.session_state.active_crop, "🌱")
+            accuracy_map = {
+                "potato": "95.43%",
+                "grape": "97.53%",
+                "apple": "94.32%",
+                "corn": "N/A",
+            }
             accuracy = accuracy_map.get(st.session_state.active_crop, "N/A")
-            st.info(f"{crop_emoji} **Active Model:** {st.session_state.active_crop.title()} ({accuracy} accuracy)")
 
     st.markdown("---")
 
@@ -683,7 +717,7 @@ def main():
 
                 # Grad-CAM visualization
                 st.markdown(f"## {t('explainable_ai', lang)}")
-                st.write(prediction_result.get('explanation', t('explanation_help', lang)))
+                st.write("Saliency map: shows which leaf regions influence the disease prediction (bright areas = high influence)")
 
                 if prediction_result.get('heatmap_base64'):
                     display_grad_cam(
@@ -790,7 +824,7 @@ def main():
 
         # Grad-CAM visualization
         st.markdown(f"## {t('explainable_ai', lang)}")
-        st.write(prediction_result.get('explanation', t('explanation_help', lang)))
+        st.write("Saliency map: shows which leaf regions influence the disease prediction (bright areas = high influence)")
 
         if prediction_result.get('heatmap_base64'):
             display_grad_cam(

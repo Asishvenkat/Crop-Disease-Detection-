@@ -59,7 +59,7 @@ Thumbs.db
 *.pth
 
 # Data
-data/plantvillage\ dataset/
+data/plantvillage dataset/
 data/dataset/
 data/*.zip
 *.csv
@@ -92,6 +92,10 @@ models/checkpoints/
 
 # Streamlit cache
 .streamlit/
+
+# Env files
+.env
+.env.*
 
 # Testing
 .pytest_cache/

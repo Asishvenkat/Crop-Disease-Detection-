@@ -60,10 +60,11 @@ class GradCAM:
     
     def generate_heatmap(self, img_array, pred_index=None):
         """
-        Generate Grad-CAM heatmap - actual gradient-based visualization
+        Generate Integrated Gradients saliency with leaf masking
+        More accurate than raw gradients - focuses on disease regions
         
         Args:
-            img_array: Input image array (160, 160, 3), values in [0, 1]
+            img_array: Input image array (H, W, 3), values in [0, 1]
             pred_index: Index of the class to explain (if None, uses argmax)
         
         Returns:
@@ -75,149 +76,114 @@ class GradCAM:
         
         img_tensor = tf.convert_to_tensor(img_array, dtype=tf.float32)
         
-        # Build the grad model once after the main model has been called
-        if self.grad_model_built is None:
-            # Ensure the model is built by running a dummy forward pass
-            try:
-                _ = self.model(img_tensor, training=False)
-            except Exception:
-                pass
-
-            target_layer = self.conv_layer
-            # If the captured conv layer is missing, try to retrieve by name
-            if target_layer is None:
-                try:
-                    target_layer = self.model.get_layer(self.grad_model)
-                except Exception:
-                    target_layer = None
-
-            if target_layer is None:
-                # Cannot proceed with Grad-CAM
-                self.grad_model_built = None
-            else:
-                inputs = getattr(self.model, "inputs", None)
-                if inputs is None or len(inputs) == 0:
-                    # If still undefined, attempt another forward pass and recheck
-                    try:
-                        _ = self.model(img_tensor, training=False)
-                        inputs = getattr(self.model, "inputs", None)
-                    except Exception:
-                        inputs = None
-
-                if inputs is not None and len(inputs) > 0:
-                    try:
-                        self.grad_model_built = tf.keras.Model(
-                            inputs=inputs,
-                            outputs=[target_layer.output, self.model.output]
-                        )
-                    except Exception:
-                        self.grad_model_built = None
-                else:
-                    self.grad_model_built = None
-        
-        heatmap_np = None
-        saliency_np = None
-
-        # Try Grad-CAM
-        if self.grad_model_built is not None:
-            try:
-                with tf.GradientTape() as tape:
-                    conv_outputs, predictions = self.grad_model_built(img_tensor, training=False)
-                    if pred_index is None:
-                        pred_index = tf.argmax(predictions[0])
-                    class_channel = predictions[:, pred_index]
-
-                grads = tape.gradient(class_channel, conv_outputs)
-
-                if grads is not None:
-                    pooled_grads = tf.reduce_mean(grads, axis=(0, 1, 2))
-                    conv_outputs = conv_outputs[0]
-                    heatmap = tf.reduce_sum(conv_outputs * pooled_grads, axis=-1)
-                    heatmap = tf.nn.relu(heatmap)
-
-                    max_val = tf.reduce_max(heatmap)
-                    if max_val > 0:
-                        heatmap = heatmap / max_val
-
-                    heatmap = tf.image.resize(
-                        tf.expand_dims(tf.expand_dims(heatmap, 0), -1),
-                        (img_array.shape[1], img_array.shape[2]),
-                        method="bilinear"
-                    )[0, :, :, 0]
-
-                    heatmap_np = heatmap.numpy()
-                    heatmap_np = cv2.GaussianBlur(heatmap_np, (3, 3), 0)
-                    if heatmap_np.max() > 0:
-                        heatmap_np = heatmap_np / heatmap_np.max()
-            except Exception as e:
-                print(f"[INFO] Grad-CAM failed: {e}")
-
-        # Saliency on input (gradient w.r.t. input)
         try:
-            with tf.GradientTape() as tape:
-                tape.watch(img_tensor)
-                predictions = self.model(img_tensor, training=False)
-                if pred_index is None:
-                    pred_index = tf.argmax(predictions[0])
-                class_channel = predictions[:, pred_index]
-
-            grads = tape.gradient(class_channel, img_tensor)
-            if grads is not None:
-                saliency = tf.reduce_mean(tf.abs(grads[0]), axis=-1)
-                saliency_np = saliency.numpy()
-                saliency_np = cv2.GaussianBlur(saliency_np, (7, 7), 0)
-                max_val = saliency_np.max()
-                if max_val > 0:
-                    saliency_np = saliency_np / max_val
-        except Exception:
-            saliency_np = saliency_np
-
-        # If both available, combine for sharper focus (guided Grad-CAM style)
-        if heatmap_np is not None and saliency_np is not None:
-            combined = heatmap_np * saliency_np
-            if combined.max() > 0:
-                combined = combined / combined.max()
-            return combined
-
-        # Otherwise return whichever is available
-        if heatmap_np is not None:
-            return heatmap_np
-        if saliency_np is not None:
-            return saliency_np
-
-        # Last-resort: uniform map (avoids misleading hotspots)
-        return np.ones((img_array.shape[1], img_array.shape[2]), dtype=np.float32)
+            # Create baseline (black image)
+            baseline = tf.zeros_like(img_tensor)
+            
+            # Integrated Gradients: interpolate between baseline and input
+            num_steps = 20
+            alphas = tf.linspace(0.0, 1.0, num_steps + 1)
+            
+            # Get prediction index
+            predictions = self.model(img_tensor, training=False)
+            if pred_index is None:
+                pred_index = tf.argmax(predictions[0])
+            
+            integrated_grads = None
+            
+            for alpha in alphas:
+                interpolated = baseline + alpha * (img_tensor - baseline)
+                
+                with tf.GradientTape() as tape:
+                    tape.watch(interpolated)
+                    preds = self.model(interpolated, training=False)
+                    target_class = preds[:, pred_index]
+                
+                grads = tape.gradient(target_class, interpolated)
+                
+                if grads is not None:
+                    if integrated_grads is None:
+                        integrated_grads = grads
+                    else:
+                        integrated_grads += grads
+            
+            if integrated_grads is None:
+                print("[WARNING] Integrated gradients failed")
+                return np.ones((img_array.shape[1], img_array.shape[2]), dtype=np.float32)
+            
+            # Average and scale by input difference
+            integrated_grads = integrated_grads / (num_steps + 1)
+            integrated_grads = (img_tensor - baseline) * integrated_grads
+            
+            # Sum across RGB channels (positive contributions only)
+            attribution = tf.reduce_sum(tf.abs(integrated_grads[0]), axis=-1)
+            saliency_np = attribution.numpy()
+            
+            # Create leaf mask to suppress background
+            img_uint8 = (img_array[0] * 255).astype(np.uint8)
+            gray = cv2.cvtColor(img_uint8, cv2.COLOR_RGB2GRAY)
+            
+            # Threshold to get leaf mask (green areas)
+            _, leaf_mask = cv2.threshold(gray, 0, 1, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+            
+            # Apply morphological operations to clean mask
+            kernel = np.ones((5, 5), np.uint8)
+            leaf_mask = cv2.morphologyEx(leaf_mask.astype(np.uint8), cv2.MORPH_CLOSE, kernel)
+            leaf_mask = cv2.morphologyEx(leaf_mask, cv2.MORPH_OPEN, kernel)
+            
+            # Apply mask to saliency
+            saliency_np = saliency_np * leaf_mask.astype(np.float32)
+            
+            # Smooth with moderate blur
+            saliency_np = cv2.GaussianBlur(saliency_np, (11, 11), 1.5)
+            
+            # Enhance contrast
+            if saliency_np.max() > 0:
+                saliency_np = saliency_np / saliency_np.max()
+                # Apply gamma correction to brighten disease spots
+                saliency_np = np.power(saliency_np, 0.7)
+            
+            return saliency_np.astype(np.float32)
+            
+        except Exception as e:
+            print(f"[ERROR] Integrated gradients failed: {e}")
+            import traceback
+            traceback.print_exc()
+            return np.ones((img_array.shape[1], img_array.shape[2]), dtype=np.float32)
     
-    def overlay_heatmap(self, original_img, heatmap, alpha=0.4, colormap=cv2.COLORMAP_JET):
+    def overlay_heatmap(self, original_img, heatmap, alpha=0.5, colormap=cv2.COLORMAP_TURBO):
         """
-        Overlay heatmap on original image for visualization (OPTIMIZED)
+        Overlay heatmap on original image with better visibility
         
         Args:
             original_img: Original RGB image, values in [0, 255]
-            heatmap: Grad-CAM heatmap
-            alpha: Transparency of heatmap overlay (default: 0.4)
-            colormap: OpenCV colormap to use
+            heatmap: Saliency heatmap (0-1)
+            alpha: Heatmap transparency (0.5 for better blend)
+            colormap: OpenCV colormap (TURBO for better contrast)
         
         Returns:
-            overlay: Overlaid image for visualization
+            overlay: Blended visualization (BGR, uint8)
         """
         from src.config import GRADCAM_RESOLUTION
         
-        # Downsize for faster processing
         target_size = GRADCAM_RESOLUTION  # e.g., (128, 128)
         original_small = cv2.resize(original_img, target_size, interpolation=cv2.INTER_LINEAR)
         heatmap_small = cv2.resize(heatmap, target_size, interpolation=cv2.INTER_LINEAR)
         
-        # Convert heatmap to 0-255 range
+        # Ensure heatmap is in [0, 1]
+        if heatmap_small.max() > 1.0:
+            heatmap_small = heatmap_small / heatmap_small.max()
+        
+        # Convert heatmap to 0-255
         heatmap_8bit = np.uint8(255 * heatmap_small)
         
-        # Apply colormap
+        # Apply colormap (TURBO has better visual contrast than JET)
         heatmap_colored = cv2.applyColorMap(heatmap_8bit, colormap)
         
         # Convert original from RGB to BGR for OpenCV
         original_bgr = cv2.cvtColor(original_small, cv2.COLOR_RGB2BGR)
         
-        # Blend images
+        # Blend images with better alpha for visibility
         overlay = cv2.addWeighted(original_bgr, 1 - alpha, heatmap_colored, alpha, 0)
         
         return overlay

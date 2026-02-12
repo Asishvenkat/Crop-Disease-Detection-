@@ -1,0 +1,81 @@
+{
+  "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot": {
+    "cause": "Fungal infection (Cercospora zeae-maydis)",
+    "symptoms": "Rectangular gray lesions with tan centers on leaves, coalescing spots",
+    "organic_treatment": [
+      "Remove infected plant debris",
+      "Improve air circulation through spacing",
+      "Apply copper-based fungicide",
+      "Avoid overhead irrigation"
+    ],
+    "chemical_treatment": [
+      "Azoxystrobin fungicide",
+      "Propiconazole spray",
+      "Apply every 7-10 days during disease season"
+    ],
+    "prevention": [
+      "Plant resistant hybrids",
+      "Crop rotation (minimum 2-3 years)",
+      "Remove infected plant material",
+      "Monitor field conditions"
+    ]
+  },
+  "Corn_(maize)___Common_rust_": {
+    "cause": "Fungal infection (Puccinia sorghi)",
+    "symptoms": "Small reddish-brown pustules on leaf surfaces, typically on lower leaves first",
+    "organic_treatment": [
+      "Apply sulfur dust or spray",
+      "Improve air circulation",
+      "Remove heavily infected leaves",
+      "Maintain plant vigor"
+    ],
+    "chemical_treatment": [
+      "Propiconazole fungicide",
+      "Trifloxystrobin spray",
+      "Apply at first sign of disease"
+    ],
+    "prevention": [
+      "Plant resistant varieties",
+      "Crop rotation practices",
+      "Destroy infected crop residue",
+      "Monitor weather conditions"
+    ]
+  },
+  "Corn_(maize)___Northern_Leaf_Blight": {
+    "cause": "Fungal infection (Exserohilum turcicum)",
+    "symptoms": "Long, elliptical lesions on leaves with gray centers, rapid leaf death",
+    "organic_treatment": [
+      "Remove infected leaves promptly",
+      "Apply copper or sulfur fungicide",
+      "Improve drainage and air flow",
+      "Avoid overhead watering"
+    ],
+    "chemical_treatment": [
+      "Azoxystrobin fungicide",
+      "Propiconazole spray",
+      "Apply preventively in susceptible areas"
+    ],
+    "prevention": [
+      "Plant resistant hybrids",
+      "Crop rotation (minimum 2 years)",
+      "Remove volunteer corn",
+      "Proper field sanitation"
+    ]
+  },
+  "Corn_(maize)___healthy": {
+    "cause": "No disease detected",
+    "symptoms": "Healthy green foliage, no lesions or spots",
+    "organic_treatment": [
+      "Continue regular care and monitoring"
+    ],
+    "chemical_treatment": [
+      "No treatment needed"
+    ],
+    "prevention": [
+      "Maintain proper irrigation and fertilization",
+      "Ensure good air circulation",
+      "Regular monitoring for early disease detection",
+      "Balanced nutrient management"
+    ]
+  }
+}

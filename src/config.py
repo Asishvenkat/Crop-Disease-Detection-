@@ -13,21 +13,24 @@ MODELS_DIR = PROJECT_ROOT / "models"
 MODEL_PATHS = {
     "potato": MODELS_DIR / "potato_model.keras",
     "grape": MODELS_DIR / "pdd_grape.keras",
-    "apple": MODELS_DIR / "pdd_apple.keras"
+    "apple": MODELS_DIR / "pdd_apple.keras",
+    "corn": MODELS_DIR / "pdd_corn.keras",
 }
 
 # Image sizes for each crop (must match training)
 IMAGE_SIZES = {
     "potato": (224, 224),
     "grape": (192, 192),   # MobileNetV2
-    "apple": (192, 192)    # MobileNetV2
+    "apple": (192, 192),   # MobileNetV2
+    "corn": (192, 192),    # MobileNetV2
 }
 
 # Grad-CAM target layers per crop (must exist in the loaded model)
 GRAD_CAM_LAYERS = {
     "potato": "Conv_1",             # MobileNetV2 last conv block
     "grape": "Conv_1",              # MobileNetV2 last conv block
-    "apple": "Conv_1"               # MobileNetV2 last conv block
+    "apple": "Conv_1",              # MobileNetV2 last conv block
+    "corn": "Conv_1",               # MobileNetV2 last conv block
 }
 
 # Default model
@@ -70,7 +73,13 @@ CLASSES_DICT = {
         "Apple___Black_rot",
         "Apple___Cedar_apple_rust",
         "Apple___healthy"
-    ]
+    ],
+    "corn": [
+        "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+        "Corn_(maize)___Common_rust_",
+        "Corn_(maize)___healthy",
+        "Corn_(maize)___Northern_Leaf_Blight",
+    ],
 }
 
 # Default classes
